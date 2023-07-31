@@ -1,4 +1,4 @@
-﻿namespace ServerSharingAPI
+﻿namespace ServerSharingLibrary
 {
     public class Response
     {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace ServerSharingAPI
+namespace ServerSharingLibrary
 {
     internal class Request
     {

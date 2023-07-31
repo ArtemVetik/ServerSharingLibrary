@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace ServerSharingAPI
+namespace ServerSharingLibrary
 {
     public class SelectResponceData
     {

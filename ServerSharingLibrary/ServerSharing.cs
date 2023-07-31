@@ -3,7 +3,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
-namespace ServerSharingAPI
+namespace ServerSharingLibrary
 {
     public static class ServerSharing
     {
@@ -59,7 +59,7 @@ namespace ServerSharingAPI
             return await Post(request);
         }
 
-        public async static Task<Response> Select(Sorting sorting, Order order, ulong limit = 10, ulong offset = 0, bool onlySelf = false)
+        public async static Task<Response> Select(EntryType entryType, Sorting sort, Order order, ulong limit = 10, ulong offset = 0)
         {
             if (Initialized == false)
                 throw new InvalidOperationException(nameof(ServerSharing) + " is not initialized");
@@ -67,11 +67,11 @@ namespace ServerSharingAPI
 #pragma warning disable IDE0037 // Use inferred member name
             var body = new
             {
-                column = sorting.ToString(),
+                entry_type = entryType,
+                sort = sort.ToString(),
                 order = order.ToString(),
                 limit = limit,
                 offset = offset,
-                onlyself = onlySelf,
             };
 #pragma warning restore IDE0037 // Use inferred member name
 
