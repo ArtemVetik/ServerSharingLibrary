@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ServerSharing.Data;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -32,20 +33,24 @@ namespace ServerSharingLibrary
             return await Post(request);
         }
 
-        public async static Task<Response> Download(string id)
+        public async static Task<ExtendedResponse<byte[]>> Download(string id)
         {
             EnsureInitialize();
 
             var request = Request.Create("DOWNLOAD", _userId, id);
-            return await Post(request);
+            var response = await Post(request);
+
+            return new ExtendedResponse<byte[]>(response, Convert.FromBase64String(response.Body));
         }
 
-        public async static Task<Response> LoadImage(string id)
+        public async static Task<ExtendedResponse<byte[]>> LoadImage(string id)
         {
             EnsureInitialize();
 
             var request = Request.Create("LOAD_IMAGE", _userId, id);
-            return await Post(request);
+            var response = await Post(request);
+
+            return new ExtendedResponse<byte[]>(response, Convert.FromBase64String(response.Body));
         }
 
         public async static Task<Response> Delete(string id)
@@ -78,7 +83,7 @@ namespace ServerSharingLibrary
             return await Post(request);
         }
 
-        public async static Task<Response> Select(EntryType entryType, SelectRequestBody.SelectOrderBy[] orderBy, ulong limit = 10, ulong offset = 0)
+        public async static Task<ExtendedResponse<List<SelectResponseData>>> Select(EntryType entryType, SelectRequestBody.SelectOrderBy[] orderBy, ulong limit = 10, ulong offset = 0)
         {
             EnsureInitialize();
 
@@ -92,8 +97,18 @@ namespace ServerSharingLibrary
 
             var request = Request.Create("SELECT", _userId, JsonConvert.SerializeObject(body));
             var response = await Post(request);
+            
+            return new ExtendedResponse<List<SelectResponseData>>(response, JsonConvert.DeserializeObject<List<SelectResponseData>>(response.Body));
+        }
 
-            return response;
+        public async static Task<ExtendedResponse<ulong>> Count(EntryType entryType)
+        {
+            EnsureInitialize();
+
+            var request = Request.Create("COUNT", _userId, JsonConvert.SerializeObject(entryType));
+            var response = await Post(request);
+
+            return new ExtendedResponse<ulong>(response, Convert.ToUInt64(response.Body));
         }
 
         private async static Task<Response> Post(Request request)
