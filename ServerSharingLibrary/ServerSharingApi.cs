@@ -64,6 +64,20 @@ namespace ServerSharingLibrary
             return await Post(request);
         }
 
+        public async static Task<Response> Rate(string id, sbyte rate)
+        {
+            EnsureInitialize();
+
+            var ratingRequest = new RatingRequestBody()
+            {
+                Id = id,
+                Rating = rate,
+            };
+
+            var request = Request.Create("RATE", _userId, JsonConvert.SerializeObject(ratingRequest));
+            return await Post(request);
+        }
+
         public async static Task<Response> Select(EntryType entryType, SelectRequestBody.SelectOrderBy[] orderBy, ulong limit = 10, ulong offset = 0)
         {
             EnsureInitialize();
@@ -88,7 +102,15 @@ namespace ServerSharingLibrary
             var response = await _client.PostAsync($"https://functions.yandexcloud.net/{_function}?integration=raw", body);
 
             var responseString = await response.Content.ReadAsStringAsync();
-            response.EnsureSuccessStatusCode();
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException exception)
+            {
+                throw new HttpRequestException($"Response: {responseString}", exception);
+            }
 
             return JsonConvert.DeserializeObject<Response>(responseString);
         }
