@@ -69,6 +69,14 @@ namespace ServerSharingLibrary
             return await Post(request);
         }
 
+        public async static  Task<Response> Dislike(string id)
+        {
+            EnsureInitialize();
+
+            var request = Request.Create("DISLIKE", _userId, id);
+            return await Post(request);
+        }
+
         public async static Task<Response> Rate(string id, sbyte rate)
         {
             EnsureInitialize();
