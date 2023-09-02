@@ -91,6 +91,16 @@ namespace ServerSharingLibrary
             return await Post(request);
         }
 
+        public async static Task<ExtendedResponse<SelectResponseData>> Info(string id)
+        {
+            EnsureInitialize();
+
+            var request = Request.Create("INFO", _userId, id);
+            var response = await Post(request);
+
+            return new ExtendedResponse<SelectResponseData>(response, JsonConvert.DeserializeObject<SelectResponseData>(response.Body));
+        }
+
         public async static Task<ExtendedResponse<List<SelectResponseData>>> Select(EntryType entryType, SelectRequestBody.SelectOrderBy[] orderBy, ulong limit = 10, ulong offset = 0)
         {
             EnsureInitialize();
